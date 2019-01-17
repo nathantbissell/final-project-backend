@@ -1,47 +1,10 @@
 const mongoose = require('mongoose')
 
 const teamSchema = new mongoose.Schema({
-    qb: {
+    players: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Player',
-        required: true
-    },
-    rb: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Player',
-        required: true
-    },
-    wr: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Player',
-        required: true
-    },
-    wr: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Player',
-        required: true
-    },
-    wr: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Player',
-        required: true
-    },
-    te: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Player',
-        required: true
-    },
-    flex: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Player',
-        required: true
-    },
-    dst: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Player',
-        required: true
-    },
-
+        ref: 'Player'
+    }],
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
