@@ -30,13 +30,13 @@ const router = express.Router()
 
 // INDEX
 // GET /teams
-router.get('/teams', requireToken, (req, res) => {
-  team.find()
+router.get('/teams', (req, res) => {
+  Team.find()
     .then(teams => {
       // `teams` will be an array of Mongoose documents
       // we want to convert each one to a POJO, so we use `.map` to
       // apply `.toObject` to each one
-      return teams.map(teams => team.toObject())
+      return teams.map(team => team.toObject())
     })
     // respond with status 200 and JSON of the teams
     .then(teams => res.status(200).json({ teams: teams }))
@@ -60,8 +60,11 @@ router.get('/teams/:id', requireToken, (req, res) => {
 // POST /teams
 router.post('/teams', requireToken, (req, res) => {
   // set owner of new team to be current user
-  req.body.team.owner = req.user.id
-
+  
+  console.log('req.body', req.body)
+  console.log('req.body.team', req.body.team)
+  
+  req.body.team.owner = req.user._id
   Team.create(req.body.team)
     // respond to succesful `create` with status 201 and JSON of new "team"
     .then(team => {
