@@ -46,9 +46,9 @@ router.get('/teams', (req, res) => {
 
 // SHOW
 // GET /teams/5a7db6c74d55bc51bdf39793
-router.get('/teams/:id', requireToken, (req, res) => {
+router.get('/teams/:_id', (req, res) => {
   // req.params.id will be set based on the `:id` in the route
-  team.findById(req.params.id)
+  Team.findById(req.params._id)
     .then(handle404)
     // if `findById` is succesful, respond with 200 and "team" JSON
     .then(team => res.status(200).json({ team: team.toObject() }))
@@ -60,10 +60,6 @@ router.get('/teams/:id', requireToken, (req, res) => {
 // POST /teams
 router.post('/teams', requireToken, (req, res) => {
   // set owner of new team to be current user
-  
-  console.log('req.body', req.body)
-  console.log('req.body.team', req.body.team)
-  
   req.body.team.owner = req.user._id
   Team.create(req.body.team)
     // respond to succesful `create` with status 201 and JSON of new "team"
@@ -78,12 +74,12 @@ router.post('/teams', requireToken, (req, res) => {
 
 // UPDATE
 // PATCH /teams/5a7db6c74d55bc51bdf39793
-router.patch('/teams/:id', requireToken, (req, res) => {
+router.patch('/teams/:_id', requireToken, (req, res) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
   delete req.body.team.owner
-
-  Team.findById(req.params.id)
+  
+  Team.findById(req.params._id)
     .then(handle404)
     .then(team => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
@@ -110,8 +106,8 @@ router.patch('/teams/:id', requireToken, (req, res) => {
 
 // DESTROY
 // DELETE /teams/5a7db6c74d55bc51bdf39793
-router.delete('/teams/:id', requireToken, (req, res) => {
-  Team.findById(req.params.id)
+router.delete('/teams/:_id', requireToken, (req, res) => {
+  Team.findById(req.params._id)
     .then(handle404)
     .then(team => {
       // throw an error if current user doesn't own `team`
@@ -124,5 +120,37 @@ router.delete('/teams/:id', requireToken, (req, res) => {
     // if an error occurs, pass it to the handler
     .catch(err => handle(err, res))
 })
+
+// router.delete('/teams/:_id', requireToken, (req, res) => {
+//   // req.body.team.owner = req.user._id
+//   // User.findOne({ id: req.body.team.owner }).then(function(user) {
+//   //   console.log('within findOne method')
+//   //   const isOwner = req.user.owner
+//   //   if (isOwner === true) {
+//     Team.findOne({ name: req.body.team.name })
+//     console.log('req.body.team.owner', req.body.team.owner)
+//     console.log('req.user._id', req.user._id)
+//       .then(teamFound => {
+//         console.log('teamfound ', teamFound)
+//         if (req.body.team.owner === req.user._id) {
+//           return res.status(401).end()
+//         }
+//         if (!teamFound) { return res.status(404).end() }
+        
+//       })
+    
+  // })
+  //   .then(handle404)
+  //   .then(team => {
+  //     // throw an error if current user doesn't own `team`
+  //     requireOwnership(req, team)
+  //     // delete the team ONLY IF the above didn't throw
+  //     team.remove()
+  //   })
+  //   // send back 204 and no content if the deletion succeeded
+  //   .then(() => res.sendStatus(204))
+  //   // if an error occurs, pass it to the handler
+  //   .catch(err => handle(err, res))
+
 
 module.exports = router
