@@ -30,7 +30,7 @@ const router = express.Router()
 
 // INDEX
 // GET /players
-router.get('/players', requireToken, (req, res) => {
+router.get('/players', (req, res) => {
   Player.find()
     .then(players => {
       // `players` will be an array of Mongoose documents
@@ -46,9 +46,9 @@ router.get('/players', requireToken, (req, res) => {
 
 // SHOW
 // GET /players/5a7db6c74d55bc51bdf39793
-router.get('/player/:id', requireToken, (req, res) => {
+router.get('/player/:_id', (req, res) => {
   // req.params.id will be set based on the `:id` in the route
-  Player.findById(req.params.id)
+  Player.findById(req.params._id)
     .then(handle404)
     // if `findById` is succesful, respond with 200 and "player" JSON
     .then(player => res.status(200).json({ player: player.toObject() }))
@@ -60,7 +60,7 @@ router.get('/player/:id', requireToken, (req, res) => {
 // POST /players
 router.post('/players', requireToken, (req, res) => {
   // set owner of new player to be current user
-  req.body.player.owner = req.user.id
+  req.body.player.owner = req.user._id
 
   Player.create(req.body.player)
     // respond to succesful `create` with status 201 and JSON of new "player"
@@ -75,12 +75,12 @@ router.post('/players', requireToken, (req, res) => {
 
 // UPDATE
 // PATCH /players/5a7db6c74d55bc51bdf39793
-router.patch('/players/:id', requireToken, (req, res) => {
+router.patch('/players/:_id', requireToken, (req, res) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
   delete req.body.player.owner
 
-  Player.findById(req.params.id)
+  Player.findById(req.params._id)
     .then(handle404)
     .then(player => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
@@ -107,8 +107,8 @@ router.patch('/players/:id', requireToken, (req, res) => {
 
 // DESTROY
 // DELETE /players/5a7db6c74d55bc51bdf39793
-router.delete('/players/:id', requireToken, (req, res) => {
-  Player.findById(req.params.id)
+router.delete('/players/:_id', requireToken, (req, res) => {
+  Player.findById(req.params._id)
     .then(handle404)
     .then(player => {
       // throw an error if current user doesn't own `player`
