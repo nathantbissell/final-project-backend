@@ -115,9 +115,7 @@ router.delete('/teams/:_id', requireToken, (req, res) => {
       // delete the team ONLY IF the above didn't throw
       team.remove()
     })
-    // send back 204 and no content if the deletion succeeded
     .then(() => res.sendStatus(204))
-    // if an error occurs, pass it to the handler
     .catch(err => handle(err, res))
 })
 
