@@ -12,6 +12,7 @@ I ran into a lot of problems with creating players as objects originally in the 
 # Future Improvements
 - I hope to implement a findone method that allows me to find team names instead of just by ID. I used it on project 3, however did not have enough time to research it effectively for this project.
 - re configuring my .csv and implementing that for build 3.
+- allowing an admin (pictured in the ERD but not used) that would be able to run CRUD actions on players and update the .csv
 
 ## CRUD Action / Routes
 
