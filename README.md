@@ -33,7 +33,7 @@ I ran into a lot of problems with creating players as objects originally in the 
 | DELETE | `/sign-out/`           | `users#signout`   |
 
 # Entity Relationship Diagram
-<a href="https://imgur.com/7VIPbeW"><img src="https://i.imgur.com/7VIPbeW.jpg" title="source: imgur.com" /></a>
+<a href="https://imgur.com/7VIPbeW"><img src="https://i.imgur.com/7VIPbeW.jpg"/></a>
 
 
 ## [License](LICENSE)
