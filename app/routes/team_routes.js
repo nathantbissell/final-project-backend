@@ -30,29 +30,33 @@ const router = express.Router()
 
 // INDEX
 // GET /teams
-router.get('/teams', (req, res) => {
-  Team.find()
-    .then(teams => {
-      // `teams` will be an array of Mongoose documents
-      // we want to convert each one to a POJO, so we use `.map` to
-      // apply `.toObject` to each one
-      return teams.map(team => team.toObject())
-    })
-    // respond with status 200 and JSON of the teams
-    .then(teams => res.status(200).json({ teams: teams }))
-    // if an error occurs, pass it to the handler
-    .catch(err => handle(err, res))
-})
+// router.get('/teams', (req, res) => {
+//   Team.find()
+//     .then(teams => {
+//       // `teams` will be an array of Mongoose documents
+//       // we want to convert each one to a POJO, so we use `.map` to
+//       // apply `.toObject` to each one
+//       return teams.map(team => team.toObject())
+//     })
+//     // respond with status 200 and JSON of the teams
+//     .then(teams => res.status(200).json({ teams: teams }))
+//     // if an error occurs, pass it to the handler
+//     .catch(err => handle(err, res))
+// })
 
 // SHOW
 // GET /teams/5a7db6c74d55bc51bdf39793
-router.get('/teams/:_id', (req, res) => {
+router.get('/team', (req, res) => {
+  
+  // req.body.team.teamName)
   // req.params.id will be set based on the `:id` in the route
-  Team.findById(req.params._id)
+  Team.findOne({ team: req.body.teamName })
     .then(handle404)
+    .then(team =>
+      // requireOwnership(req, team)
+      // if(!team) { return res.status(404).end() }
+      res.status(200).json({ team: team.toObject() }))
     // if `findById` is succesful, respond with 200 and "team" JSON
-    .then(team => res.status(200).json({ team: team.toObject() }))
-    // if an error occurs, pass it to the handler
     .catch(err => handle(err, res))
 })
 
@@ -80,6 +84,7 @@ router.patch('/teams/:_id', requireToken, (req, res) => {
   delete req.body.team.owner
   
   Team.findById(req.params._id)
+  // Team.findOne(req.params.teamName)
     .then(handle404)
     .then(team => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
