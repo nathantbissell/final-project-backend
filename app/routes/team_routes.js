@@ -48,14 +48,10 @@ router.get('/teams', (req, res) => {
 // GET /teams/5a7db6c74d55bc51bdf39793
 router.get('/team/:teamName', requireToken, (req, res) => {
   // need to append to end of url, search for it via req.params
-  console.log('req.params', req.params)
-
-  // req.body.team.teamName)
   // req.params.id will be set based on the `:id` in the route
   Team.findOne({ teamName: req.params.teamName })
     .then(team =>
       // requireOwnership(req, team)
-      // if(!team) { return res.status(404).end() }
       res.status(200).json({ team: team.toObject() })
     )
     // if `findById` is succesful, respond with 200 and "team" JSON
@@ -84,8 +80,6 @@ router.post('/teams', requireToken, (req, res) => {
 router.patch('/teams/:teamName', requireToken, (req, res) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair\
-  console.log('req.params', req.params)
-  console.log('req.body', req.body)
   delete req.body.team.owner
 
   Team.findOne({ teamName: req.params.teamName })
@@ -115,8 +109,8 @@ router.patch('/teams/:teamName', requireToken, (req, res) => {
 
 // DESTROY
 // DELETE /teams/5a7db6c74d55bc51bdf39793
-router.delete('/teams/:_id', requireToken, (req, res) => {
-  Team.findById(req.params._id)
+router.delete('/teams/:teamName', requireToken, (req, res) => {
+  Team.findOne({ teamName: req.params.teamName })
     .then(handle404)
     .then(team => {
       // throw an error if current user doesn't own `team`
