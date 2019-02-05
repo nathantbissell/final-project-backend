@@ -81,12 +81,14 @@ router.post('/teams', requireToken, (req, res) => {
 
 // UPDATE
 // PATCH /teams/5a7db6c74d55bc51bdf39793
-router.patch('/teams/:_id', requireToken, (req, res) => {
+router.patch('/teams/:teamName', requireToken, (req, res) => {
   // if the client attempts to change the `owner` property by including a new
-  // owner, prevent that by deleting that key/value pair
+  // owner, prevent that by deleting that key/value pair\
+  console.log('req.params', req.params)
+  console.log('req.body', req.body)
   delete req.body.team.owner
 
-  Team.findById(req.params._id)
+  Team.findOne({ teamName: req.params.teamName })
     // Team.findOne(req.params.teamName)
     .then(handle404)
     .then(team => {
@@ -102,7 +104,6 @@ router.patch('/teams/:_id', requireToken, (req, res) => {
           delete req.body.team[key]
         }
       })
-
       // pass the result of Mongoose's `.update` to the next `.then`
       return team.update(req.body.team)
     })
@@ -126,36 +127,5 @@ router.delete('/teams/:_id', requireToken, (req, res) => {
     .then(() => res.sendStatus(204))
     .catch(err => handle(err, res))
 })
-
-// router.delete('/teams/:_id', requireToken, (req, res) => {
-//   // req.body.team.owner = req.user._id
-//   // User.findOne({ id: req.body.team.owner }).then(function(user) {
-//   //   console.log('within findOne method')
-//   //   const isOwner = req.user.owner
-//   //   if (isOwner === true) {
-//     Team.findOne({ name: req.body.team.name })
-//     console.log('req.body.team.owner', req.body.team.owner)
-//     console.log('req.user._id', req.user._id)
-//       .then(teamFound => {
-//         console.log('teamfound ', teamFound)
-//         if (req.body.team.owner === req.user._id) {
-//           return res.status(401).end()
-//         }
-//         if (!teamFound) { return res.status(404).end() }
-
-//       })
-
-// })
-//   .then(handle404)
-//   .then(team => {
-//     // throw an error if current user doesn't own `team`
-//     requireOwnership(req, team)
-//     // delete the team ONLY IF the above didn't throw
-//     team.remove()
-//   })
-//   // send back 204 and no content if the deletion succeeded
-//   .then(() => res.sendStatus(204))
-//   // if an error occurs, pass it to the handler
-//   .catch(err => handle(err, res))
 
 module.exports = router
